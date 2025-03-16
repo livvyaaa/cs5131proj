@@ -1,0 +1,15 @@
+tensorflow
+numpy
+pandas
+scikit-learn
+matplotlib
+seaborn
+opencv-python
+pillow
+tqdm
+h5py
+keras
+tensorflow-datasets
+tensorflow-hub
+tensorflow-probability
+jupyter
