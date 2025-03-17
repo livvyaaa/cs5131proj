@@ -1,0 +1,5 @@
+https://firms.modaps.eosdis.nasa.gov/
+https://www.copernicus.eu/en/access-data/conventional-data-access-hubs
+https://www.earthdata.nasa.gov/
+https://earthexplorer.usgs.gov/
+https://www.goes.noaa.gov/  
