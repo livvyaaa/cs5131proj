@@ -13,3 +13,4 @@ tensorflow-datasets
 tensorflow-hub
 tensorflow-probability
 jupyter
+pystac-client
