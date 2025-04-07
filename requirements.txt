@@ -14,3 +14,11 @@ tensorflow-hub
 tensorflow-probability
 jupyter
 pystac-client
+folium
+geopandas
+shapely
+cdsapi
+xarray
+netcdf4
+h5netcdf
+scipy
