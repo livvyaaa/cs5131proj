@@ -1,5 +1,3 @@
-import config # create config.py, then put tokens in (e.g, X_API_TOKEN = "")
-
 import tensorflow as tf
 import numpy as np
 import pandas as pd

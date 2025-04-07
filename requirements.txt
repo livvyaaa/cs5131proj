@@ -22,3 +22,5 @@ xarray
 netcdf4
 h5netcdf
 scipy
+rasterio
+sat-search
