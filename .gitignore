@@ -5,5 +5,4 @@ __pycache__/
 venv/
 .env/
 datasets/FIRMS/MODIS/fire_archive_M-C61_599044.csv
-*.nc
 *.zip
