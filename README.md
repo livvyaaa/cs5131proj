@@ -10,6 +10,7 @@ This repository contains two major components:
 ## Key Files for Grading:
 -  [Random Forest + Exploratory Training](./testing/random.ipynb)
 -  [CNN Model Training on Landsat](./landsat/cnn.ipynb)
+-  [LSTM Time Series on ERA5 Weather Data](./era5_lstm_cleaned.ipynb)
 ## 🧩 PART 1: Fire Point Tool (Google Earth Engine + VIIRS)
 
 ### ✅ Features
