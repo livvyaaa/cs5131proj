@@ -18,11 +18,14 @@ This repository contains two major components:
 - Cluster using K-Means and export centroid CSV
 - Upload your own fire CSVs
 
+### Main Landing Page
+Go to `http://127.0.0.1:5000/`
+
 ### ▶️ Run Instructions
 ```bash
 python mainpage.py
 ```
-Then go to: `http://127.0.0.1:5000/`
+Then go to: `http://127.0.0.1:5000/app1`
 
 ### 🧠 CSV Format
 ```csv
@@ -41,7 +44,7 @@ This tool loads `.tif` Landsat image patches and uses a pre-trained CNN to predi
 ```bash
 python mainpage.py
 ```
-Then open: `http://127.0.0.1:5000/app1`
+Then open: `http://127.0.0.1:5000/app2`
 
 ### 🖼 How It Works
 - You upload `.tif` images (typically clipped Landsat 8 or Sentinel-2 RGB or SWIR bands)
