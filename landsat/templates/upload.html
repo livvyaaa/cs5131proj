@@ -1,249 +1,337 @@
-<!-- upload.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fire Detection</title>
-    <link rel="stylesheet" href="{{ url_for('app1.static', filename='style.css') }}">
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #f5f5f5;
-            overflow: hidden;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fire Detection</title>
+  <link rel="stylesheet" href="{{ url_for('app1.static', filename='style.css') }}">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #f5f5f5;
+      overflow: hidden;
+    }
 
-        .container {
-            width: 90%;
-            max-width: 1200px;
-        }
+    .container {
+      width: 90%;
+      max-width: 1200px;
+    }
 
-        h1 {
-            font-size: 32px;
-            margin-bottom: 30px;
-            color: #3e2723;
-            text-align: center;
-        }
+    h1 {
+      font-size: 32px;
+      margin-bottom: 30px;
+      color: #3e2723;
+      text-align: center;
+    }
 
-        .main-container {
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            gap: 24px;
-            position: relative;
-        }
+    .main-container {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      gap: 24px;
+      position: relative;
+    }
 
-        .upload-box, .prediction-box {
-            transition: all 0.6s ease;
-        }
+    .upload-box, .prediction-box {
+      transition: all 0.6s ease;
+    }
 
-        .upload-box {
-            width: 100%;
-            max-width: 500px;
-            background-color: #e8f5e9;
-            padding: 24px;
-            border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 18px;
-            transform: translateX(0);
-            position: relative;
-            z-index: 2;
-        }
+    .upload-box {
+      width: 100%;
+      max-width: 500px;
+      background-color: #e8f5e9;
+      padding: 24px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 18px;
+      transform: translateX(0);
+      position: relative;
+      z-index: 2;
+    }
 
-        .main-container.slide .upload-box {
-            display: flex;
-            animation: slide 0.9s ease forwards;
-        }
+    .main-container.slide .upload-box {
+      display: flex;
+      animation: slide 0.9s ease forwards;
+    }
 
-        @keyframes slide {
-            from { transform: translateX(270px); }
-            to { transform: translateX(0); }
-        }
+    @keyframes slide {
+      from { transform: translateX(270px); }
+      to { transform: translateX(0); }
+    }
 
-        .prediction-box {
-            width: 100%;
-            max-width: 500px;
-            height: 420px;
-            padding: 24px;
-            border-radius: 10px;
-            background-color: #fff3e0;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            opacity: 0;
-            z-index: 1;
-        }
+    .prediction-box {
+      width: 100%;
+      max-width: 500px;
+      height: 420px;
+      padding: 24px;
+      border-radius: 10px;
+      background-color: #fff3e0;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      opacity: 0;
+      z-index: 1;
+      justify-content: flex-start;
+    }
 
-        .prediction-box.fade-in {
-            display: flex;
-            animation: fadeIn 0.9s ease forwards;
-        }
-        .back-button-container {
-            width: 100%;
-            text-align: left;
-            padding: 20px 60px;
-            box-sizing: border-box;
-            position: absolute;
-            top: 0;
-            left: 0;
-            z-index: 999;
-        }
+    .prediction-box.fade-in {
+      display: flex;
+      animation: fadeIn 0.9s ease forwards;
+    }
 
-        .back-button {
-            background-color: #4caf50;
-            color: white;
-            padding: 10px 20px;
-            text-decoration: none;
-            border-radius: 8px;
-            font-size: 16px;
-            display: inline-block;
-        }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateX(-270px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateX(-270px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
+    .back-button-container {
+      width: 100%;
+      text-align: left;
+      padding: 20px 60px;
+      box-sizing: border-box;
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 999;
+    }
 
-        #predictionResult h2 {
-            font-size: 22px;
-            margin-bottom: 12px;
-            color: #333;
-        }
+    .back-button {
+      background-color: #4caf50;
+      color: white;
+      padding: 10px 20px;
+      text-decoration: none;
+      border-radius: 8px;
+      font-size: 16px;
+      display: inline-block;
+    }
 
-        #resultText {
-            font-size: 28px;
-            font-weight: bold;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-        }
+    .drop-zone {
+      border: 2px dashed #66bb6a;
+      padding: 12px 16px;
+      border-radius: 10px;
+      text-align: center;
+      cursor: pointer;
+      background-color: #f1f8e9;
+      transition: background-color 0.3s ease;
+      position: relative;
+      font-size: 14px;
+      width: 250px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
 
-        #bigFireEmoji {
-            font-size: 100px;
-            margin-top: 0;
-            margin-bottom: 10px;
-            transition: transform 0.3s ease;
-        }
+    .drop-zone.hover {
+      background-color: #dcedc8;
+    }
 
-        #bigFireEmoji.positive {
-            animation: pulse 1s infinite;
-        }
+    .drop-zone input[type="file"] {
+      opacity: 0;
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      cursor: pointer;
+    }
 
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
-    </style>
+    #fileNameDisplay {
+      font-size: 14px;
+      color: #444;
+      font-weight: 500;
+      margin-top: -8px;
+      word-break: break-all;
+      text-align: center;
+    }
+
+    #uploadButton {
+      display: inline-block;
+      background-color: #ff7043;
+      color: white;
+      font-weight: bold;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      display: none;
+    }
+
+    #predictionResult {
+      margin-top: 5px;
+      text-align: center;
+    }
+
+    #predictionResult h2 {
+      font-size: 20px;
+      margin-bottom: 6px;
+      color: #333;
+    }
+
+    #resultText {
+      font-size: 24px;
+      font-weight: bold;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    #bigFireEmoji {
+      font-size: 60px;
+      margin-top: 6px;
+      margin-bottom: 0;
+      transition: transform 0.3s ease;
+    }
+
+    #bigFireEmoji.positive {
+      animation: pulse 1s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+  </style>
 </head>
 <body>
-    <div class="back-button-container">
-        <a href="{{ url_for('home') }}" class="back-button">← Back to Main Page</a>
-    </div>
-    <div class="container">
-        <h1>Upload a Landsat .tif Image to Detect Fire</h1>
+  <div class="back-button-container">
+    <a href="{{ url_for('home') }}" class="back-button">← Back to Main Page</a>
+  </div>
 
-        <div id="mainContainer" class="main-container">
+  <div class="container">
+    <h1>Upload a Landsat .tif Image to Detect Fire</h1>
 
-            <div id="uploadBox" class="upload-box">
-                <form id="uploadForm" enctype="multipart/form-data">
-                    <div class="file-upload-container">
-                        <input type="file" name="file" accept=".tif" required onchange="enableUploadButton()">
-                        <button type="button" id="uploadButton" onclick="uploadImage()" style="display:none;">Upload and Predict</button>
-                    </div>
-                </form>
+    <div id="mainContainer" class="main-container">
 
-                <div id="predictionResult" style="display: none;">
-                    <h2>Prediction:</h2>
-                    <p id="resultText">
-                        <span id="fireText"></span>
-                    </p>
-                    <div id="bigFireEmoji" style="display: none;">🔥</div>
-                </div>
+      <div id="uploadBox" class="upload-box">
+        <form id="uploadForm" enctype="multipart/form-data">
+          <div class="file-upload-container">
+            <div id="dropZone" class="drop-zone">
+              <span>Drop a .tif file or click to browse</span>
+              <input type="file" name="file" accept=".tif" id="fileInput" required>
             </div>
+            <div id="fileNameDisplay"></div>
+            <button type="button" id="uploadButton" onclick="uploadImage()">Upload and Predict</button>
+          </div>
+        </form>
 
-            <div id="predictionBox" class="prediction-box">
-                <h2>Processed Image Preview:</h2>
-                <img id="processedImage" src="" alt="Processed Image">
-            </div>
+        <div id="predictionResult" style="display: none;">
+          <h2>Prediction:</h2>
+          <p id="resultText">
+            <span id="fireText"></span>
+          </p>
+          <div id="bigFireEmoji" style="display: none;">🔥</div>
         </div>
+      </div>
+
+      <div id="predictionBox" class="prediction-box">
+        <h2>Processed Image Preview:</h2>
+        <img id="processedImage" src="" alt="Processed Image">
+      </div>
     </div>
+  </div>
 
-    <script>
-        let uploadedFile = null;
+  <script>
+    let uploadedFile = null;
+    const dropZone = document.getElementById("dropZone");
+    const fileInput = document.getElementById("fileInput");
+    const fileNameDisplay = document.getElementById("fileNameDisplay");
 
-        function enableUploadButton() {
-            const fileInput = document.querySelector("input[type='file']");
-            uploadedFile = fileInput.files[0];
-            const uploadButton = document.getElementById("uploadButton");
-            if (uploadedFile) {
-                uploadButton.style.display = "inline";
-            }
+    dropZone.addEventListener("dragover", (e) => {
+      e.preventDefault();
+      dropZone.classList.add("hover");
+    });
+
+    dropZone.addEventListener("dragleave", () => {
+      dropZone.classList.remove("hover");
+    });
+
+    dropZone.addEventListener("drop", (e) => {
+      e.preventDefault();
+      dropZone.classList.remove("hover");
+
+      const file = e.dataTransfer.files[0];
+      if (file && file.name.endsWith(".tif")) {
+        fileInput.files = e.dataTransfer.files;
+        handleFile(fileInput.files);
+      } else {
+        alert("Only .tif files are supported.");
+      }
+    });
+
+    fileInput.addEventListener("change", () => {
+      handleFile(fileInput.files);
+    });
+
+    function handleFile(files) {
+      uploadedFile = files[0];
+      if (uploadedFile) {
+        document.getElementById("uploadButton").style.display = "inline-block";
+        fileNameDisplay.textContent = uploadedFile.name;
+      }
+    }
+
+    function uploadImage() {
+      if (!uploadedFile) {
+        alert("Please upload an image first.");
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("file", uploadedFile);
+
+      fetch("/app1/predict", {
+        method: "POST",
+        body: formData,
+      })
+      .then(response => response.json())
+      .then(data => {
+        const processedImage = document.getElementById("processedImage");
+        const resultText = document.getElementById("resultText");
+        const fireText = document.getElementById("fireText");
+        const bigFireEmoji = document.getElementById("bigFireEmoji");
+        const predictionResult = document.getElementById("predictionResult");
+        const predictionBox = document.getElementById("predictionBox");
+        const mainContainer = document.getElementById("mainContainer");
+
+        processedImage.src = "data:image/png;base64," + data.img_base64;
+        fireText.innerText = data.result;
+
+        if (data.result === "Fire") {
+          bigFireEmoji.innerText = "🔥";
+          bigFireEmoji.style.color = "#d32f2f";
+          bigFireEmoji.style.filter = "none";
+          bigFireEmoji.className = "positive";
+          bigFireEmoji.style.display = "block";
+          fireText.className = "positive";
+        } else {
+          bigFireEmoji.innerText = "🔥";
+          bigFireEmoji.style.color = "#9e9e9e";
+          bigFireEmoji.style.filter = "grayscale(100%)";
+          bigFireEmoji.className = "negative";
+          bigFireEmoji.style.display = "block";
+          fireText.className = "negative";
         }
 
-        function uploadImage() {
-            if (!uploadedFile) {
-                alert("Please upload an image first.");
-                return;
-            }
-
-            const formData = new FormData();
-            formData.append("file", uploadedFile);
-
-            fetch("/app1/predict", {
-                method: "POST",
-                body: formData,
-            })
-            .then(response => response.json())
-            .then(data => {
-                const processedImage = document.getElementById("processedImage");
-                const resultText = document.getElementById("resultText");
-                const fireText = document.getElementById("fireText");
-                const bigFireEmoji = document.getElementById("bigFireEmoji");
-                const predictionResult = document.getElementById("predictionResult");
-                const uploadBox = document.getElementById("uploadBox");
-                const predictionBox = document.getElementById("predictionBox");
-                const mainContainer = document.getElementById("mainContainer");
-
-                processedImage.src = "data:image/png;base64," + data.img_base64;
-
-                fireText.innerText = data.result;
-
-                if (data.result === "Fire") {
-                    bigFireEmoji.innerText = "🔥";
-                    bigFireEmoji.style.color = "#d32f2f";
-                    bigFireEmoji.style.filter = "none";
-                    bigFireEmoji.className = "positive";
-                    bigFireEmoji.style.display = "block";
-                    fireText.className = "positive";
-                } else {
-                    bigFireEmoji.innerText = "🔥";
-                    bigFireEmoji.style.color = "#9e9e9e";
-                    bigFireEmoji.style.filter = "grayscale(100%)";
-                    bigFireEmoji.className = "negative";
-                    bigFireEmoji.style.display = "block";
-                    fireText.className = "negative";
-                }
-
-                predictionResult.style.display = "block";
-
-                //pause(1000);
-                predictionBox.classList.add("fade-in");
-                mainContainer.classList.add("slide");
-            })
-            .catch(error => {
-                console.error("Error:", error);
-            });
-        }
-    </script>
+        predictionResult.style.display = "block";
+        predictionBox.classList.add("fade-in");
+        mainContainer.classList.add("slide");
+      })
+      .catch(error => {
+        console.error("Error:", error);
+      });
+    }
+  </script>
 </body>
 </html>
