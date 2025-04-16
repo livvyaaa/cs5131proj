@@ -3,7 +3,7 @@ from landsat.app import app1
 from kmeans.app import app2
 
 app = Flask(__name__)
-app.config['UPLOAD_FOLDER'] = 'kmeans/static/uploads'
+app.config['UPLOAD_FOLDER'] = 'static'
 # Register the two Flask apps (as blueprints)
 app.register_blueprint(app1, url_prefix='/app1')
 app.register_blueprint(app2, url_prefix='/app2')
