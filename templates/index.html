@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <div class="home-container">
+    <h2>Welcome to the Fire Data Tools!</h2>
+    <p>Here you can fetch fire point data, visualize heatmaps, and analyze clusters.</p>
+
+    <!-- Navigation Tabs -->
+    <div class="tabs">
+      <ul class="tab-list">
+        <li class="tab-item active" id="tab-intro" onclick="showTab('intro')">Home</li>
+        <li class="tab-item" id="tab-app1" onclick="showTab('app1')">Fire Detection</li>
+        <li class="tab-item" id="tab-app2" onclick="showTab('app2')">Fire Data Analysis</li>
+      </ul>
+    </div>
+
+    <!-- Content for each tab -->
+    <div class="tab-content">
+      <!-- Intro Tab (Default) -->
+      <div class="tab-pane" id="intro-tab">
+        <h3>Introduction</h3>
+        <p>Explore the tools below to work with fire data and analyze fire risk across regions. Choose a tool to begin.</p>
+      </div>
+
+      <!-- App1 Tab: Fire Detection Tool -->
+      <div class="tab-pane" id="app1-tab" style="display: none;">
+        <h3>Fire Detection Tool</h3>
+        <p>This tool allows you to upload Landsat .tif images for fire detection using a trained deep learning model.</p>
+        <a href="{{ url_for('app1.app1_home') }}" class="button">Go to Fire Detection Tool</a>
+      </div>
+
+      <!-- App2 Tab: Fire Data Analysis Tool -->
+      <div class="tab-pane" id="app2-tab" style="display: none;">
+        <h3>Fire Data Analysis Tool</h3>
+        <p>This tool allows you to fetch fire point data, visualize fire locations as heatmaps, and perform clustering analysis.</p>
+        <a href="{{ url_for('app2.app2_home') }}" class="button">Go to Fire Data Analysis Tool</a>
+      </div>
+    </div>
+  </div>
+
+  <footer style="margin-top: 60px; padding: 20px; background-color: #fff3e0; color: #5d4037; font-size: 16px; border-top: 1px solid #e0e0e0; text-align: center;">
+    <p>🔥 <strong>CS5131 Project</strong> — Wildfire Data Analysis Platform</p>
+    <p>Developed by Allen Lee & Oliver Yeow</p>
+    <p style="font-size: 14px; color: #8d6e63;">NUS High School, 2025</p>
+  </footer>
+
+  <style>
+    .home-container {
+      padding: 40px;
+      text-align: center;
+      background-color: #fef6f0;
+    }
+
+    h2 {
+      font-size: 32px;
+      margin-bottom: 20px;
+      color: #3e2723;
+    }
+
+    p {
+      font-size: 18px;
+      margin-bottom: 30px;
+      color: #4e342e;
+    }
+
+    .tabs {
+      margin-bottom: 40px;
+    }
+
+    .tab-list {
+      list-style: none;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      padding: 0;
+    }
+
+    .tab-item {
+      cursor: pointer;
+      padding: 10px 20px;
+      font-size: 18px;
+      background-color: #fff8f2;
+      border-radius: 6px;
+      transition: background-color 0.3s ease;
+      font-weight: bold;
+    }
+
+    .tab-item.active {
+      background-color: #ff7043;
+      color: white;
+    }
+
+    .tab-item:hover {
+      background-color: #f4511e;
+      color: white;
+    }
+
+    .tab-content {
+      display: block;
+    }
+
+    .tab-pane {
+      display: none;
+    }
+
+    .button {
+      padding: 10px 20px;
+      background-color: #4caf50;
+      color: white;
+      border-radius: 8px;
+      text-decoration: none;
+      font-size: 18px;
+    }
+
+    .button:hover {
+      background-color: #388e3c;
+    }
+  </style>
+
+  <script>
+    function showTab(tabId) {
+      // Hide all tabs
+      const tabs = document.querySelectorAll('.tab-pane');
+      tabs.forEach(tab => tab.style.display = 'none');
+      
+      // Remove active class from all tab items
+      const tabItems = document.querySelectorAll('.tab-item');
+      tabItems.forEach(item => item.classList.remove('active'));
+
+      // Show the selected tab
+      document.getElementById(`${tabId}-tab`).style.display = 'block';
+      
+      // Set the active tab item
+      document.getElementById(`tab-${tabId}`).classList.add('active');
+    }
+
+    // Set default tab to intro
+    window.onload = () => showTab('intro');
+  </script>
+
+{% endblock %}

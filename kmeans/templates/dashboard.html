@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="stylesheet" href="{{ url_for('app2.static', filename='style.css') }}">
+  <title>Fire Data Tools</title>
+  <style>
+    .progress-container {
+      background-color: #eee;
+      border-radius: 8px;
+      height: 14px;
+      width: 100%;
+      margin-top: 10px;
+      overflow: hidden;
+      display: none;
+    }
+
+    .progress-bar {
+      background-color: #ffa726;
+      height: 100%;
+      width: 5%;
+      transition: width 0.4s ease;
+    }
+
+    .button {
+      display: inline-block;
+      background-color: #ff7043;
+      color: white;
+      font-weight: bold;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      text-align: center;
+      font-size: 16px;
+      text-decoration: none;
+      width: 100%;
+    }
+
+    .button:hover {
+      background-color: #f4511e;
+    }
+
+    .button.green {
+      background-color: #4caf50;
+    }
+
+    .button.green:hover {
+      background-color: #388e3c;
+    }
+
+    .button#downloadCentroidsBtn {
+      background-color: #4db6ac; /* teal-ish color for contrast */
+    }
+
+    .button#downloadCentroidsBtn:hover {
+      background-color: #009688;
+    }
+
+    .button#downloadBtn {
+      display: inline-block;
+      background-color: #4db6ac; /* Updated to teal color */
+      color: white;
+      font-weight: bold;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      text-align: center;
+      font-size: 16px;  /* Same font size */
+      padding: 10px 20px;  /* Same padding */
+      margin-top: 15px;
+      transition: background-color 0.3s ease;
+      width: 100%; /* Ensures same width as the other buttons */
+    }
+
+    .button#downloadBtn:hover {
+      background-color: #009688;
+    }
+
+    .button#downloadBtn {
+      display: inline-block;
+    }
+    .back-button-container {
+          width: 100%;
+          text-align: left;
+          padding: 20px 60px;
+          box-sizing: border-box;
+          position: absolute;
+          top: 0;
+          left: 0;
+          z-index: 999;
+      }
+
+      .back-button {
+          background-color: #4caf50;
+          color: white;
+          padding: 10px 20px;
+          text-decoration: none;
+          border-radius: 8px;
+          font-size: 16px;
+          display: inline-block;
+      }
+
+    img.plot-img {
+      width: 100%;
+      margin-top: 12px;
+      border-radius: 10px;
+      border: 2px solid #ffccbc;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+    }
+
+    #statusText,
+    #uploadResult {
+      margin-top: 10px;
+      font-weight: bold;
+      color: #5d4037;
+    }
+
+    #heatmap {
+      display: none; /* Start with the heatmap hidden */
+    }
+
+    /* Hide the text "Heatmap of Fires" initially */
+    #visualizationText {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="back-button-container">
+    <a href="{{ url_for('home') }}" class="back-button">← Back to Main Page</a>
+  </div>
+  <div class="dashboard-container">
+    <h1>🔥 Fire Point Data Tools</h1>
+
+    <div class="grid-2x2">
+      <!-- Box 1: Fetch -->
+      <div class="grid-box fetch-box">
+        <h2>1. Fetch Fire Points</h2>
+        <label>Country:</label>
+        <select id="country">
+          <option value="Australia">Australia</option>
+          <option value="Brazil">Brazil</option>
+          <option value="Indonesia">Indonesia</option>
+          <option value="Canada">Canada</option>
+        </select>
+
+        <label>Start Date:</label>
+        <input type="date" id="start_date">
+        <label>End Date:</label>
+        <input type="date" id="end_date">
+
+        <button onclick="startAsyncFetch()">Generate CSV</button>
+
+        <!-- Progress Bar for CSV Generation -->
+        <div class="progress-container" id="csvProgressContainer">
+          <div class="progress-bar" id="csvProgressBar"></div>
+        </div>
+
+        <div id="statusText"></div>
+        <a id="downloadBtn" href="#" download class="button green" style="display:none;">Download CSV</a>
+      </div>
+
+      <!-- Box 2: Upload -->
+      <div class="grid-box upload-box">
+        <h2>2. Upload CSV</h2>
+        <form id="uploadForm">
+          <input type="file" name="file" accept=".csv" required />
+          <button type="submit" class="button">Upload CSV</button>
+        </form>
+        <div id="uploadResult"></div>
+      </div>
+
+      <!-- Box 3: Visualizations -->
+      <div class="grid-box visuals-box">
+        <h2>3. Visualizations</h2>
+
+        <!-- Progress Bar for Heatmap Generation -->
+        <div id="heatmapLoader" style="display: none; width: 100%; margin: 10px 0;">
+          <div style="background: #eee; border-radius: 8px; overflow: hidden; height: 16px;">
+            <div id="heatmapProgress" style="height: 100%; width: 100%; background-color: #ff7043; animation: loading 1s infinite;"></div>
+          </div>
+          <div style="text-align: center; margin-top: 6px; font-size: 14px;">Generating Heatmap...</div>
+        </div>
+
+        <div id="visualizationText" style="text-align: center;">Heatmap of Fires</div>
+        <img id="heatmap" class="plot-img" src="" alt="Heatmap of Fires" />
+        <img id="scatterPlot" class="plot-img" src="" alt="Scatterplot" style="display:none;" />
+      </div>
+
+      <!-- Box 4: Cluster -->
+      <div class="grid-box cluster-box">
+        <h2>4. Cluster Analysis</h2>
+        <label for="centroidCount">Number of Centroids:</label>
+        <input type="number" id="centroidCount" value="50" min="1" max="200">
+        <button onclick="loadScatter()" class="button">Show Scatterplot</button>
+        <button onclick="loadClusters()" class="button">Show Clusters</button>
+        <button id="downloadCentroidsBtn" onclick="downloadCentroids()" class="button" style="display:none;">Download Centroid CSV</button>
+        <img id="clusterPlot" class="plot-img" src="" alt="Cluster Plot" style="display:none;" />
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let currentCSV = null;
+
+    async function startAsyncFetch() {
+      const country = document.getElementById("country").value;
+      const start = document.getElementById("start_date").value;
+      const end = document.getElementById("end_date").value;
+      const statusText = document.getElementById("statusText");
+      const downloadBtn = document.getElementById("downloadBtn");
+      const heatmap = document.getElementById("heatmap");
+      const csvProgress = document.getElementById("csvProgressBar");
+      const csvProgressContainer = document.getElementById("csvProgressContainer");
+      const heatmapProgress = document.getElementById("heatmapProgress");
+      const heatmapProgressContainer = document.getElementById("heatmapLoader");
+
+      statusText.innerText = "Starting fetch...";
+      downloadBtn.style.display = "none";
+      heatmap.style.display = "none";
+      csvProgressContainer.style.display = "block";
+      csvProgress.style.width = "5%";
+      heatmapProgressContainer.style.display = "none";
+      heatmapProgress.style.width = "0%";
+
+      const res = await fetch("/app2/fetch_fire_data", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ country, start_date: start, end_date: end }),
+      });
+
+      const data = await res.json();
+      const fetch_id = data.fetch_id;
+
+      const poll = setInterval(async () => {
+        const statusRes = await fetch(`/app2/check_status/${fetch_id}`);
+        const statusData = await statusRes.json();
+
+        if (statusData.status === "processing") {
+          statusText.innerText = "Processing fire data...";
+          let currentWidth = parseInt(csvProgress.style.width) || 5;
+          if (currentWidth < 90) {
+            csvProgress.style.width = (currentWidth + 5) + "%"; // Increment the progress bar width
+          }
+        } else if (statusData.status === "error") {
+          statusText.innerText = "❌ Error fetching fire data.";
+          csvProgressContainer.style.display = "none"; // Hide progress bar
+          clearInterval(poll);
+        } else if (statusData.status.endsWith(".csv")) {
+          statusText.innerText = "✅ Fire data ready.";
+          csvProgress.style.width = "100%"; // Fill the progress bar
+          csvProgressContainer.style.display = "none"; // Hide progress bar
+          const cleanFilename = statusData.status.split('\\').pop().split('/').pop();
+          downloadBtn.href = `/static/${encodeURIComponent(cleanFilename)}`;
+          downloadBtn.style.display = "inline-block";
+
+          // Show heatmap loading bar
+          heatmapProgressContainer.style.display = "block";
+          heatmapProgress.style.width = "10%";
+
+          const img = new Image();
+          img.onload = () => {
+            heatmap.src = img.src;
+            heatmap.style.display = "block";
+            heatmapProgress.style.width = "100%";
+            setTimeout(() => heatmapProgressContainer.style.display = "none", 500);
+          };
+          const filename = statusData.status.split('\\').pop().split('/').pop();
+          img.src = `/app2/heatmap?csv=${encodeURIComponent(filename)}`;
+
+
+          currentCSV = statusData.status;
+          clearInterval(poll);
+        }
+      }, 2000);
+    }
+
+    document.getElementById("uploadForm").addEventListener("submit", async function (e) {
+      e.preventDefault();
+      const formData = new FormData(this);
+      const res = await fetch("/app2/upload_csv", { method: "POST", body: formData });
+      const data = await res.json();
+
+      if (data.status === "success") {
+        document.getElementById("uploadResult").innerText = `✅ File uploaded: ${data.file}`;
+        currentCSV = data.file;
+        const heatmapLoader = document.getElementById("heatmapLoader");
+        heatmapLoader.style.display = "block";
+        document.getElementById("heatmap").style.display = "none";
+
+        const heatmapImg = new Image();
+        heatmapImg.onload = () => {
+          document.getElementById("heatmap").src = heatmapImg.src;
+          document.getElementById("heatmap").style.display = "block";
+          heatmapLoader.style.display = "none";
+        };
+        const filename = data.file.split('\\').pop().split('/').pop();
+        heatmapImg.src = `/app2/heatmap?csv=${encodeURIComponent(filename)}`;
+
+      } else {
+        document.getElementById("uploadResult").innerText = `❌ ${data.message}`;
+      }
+    });
+
+    function loadScatter() {
+      if (!currentCSV) return alert("Upload or fetch a CSV first.");
+      document.getElementById("scatterPlot").src = `/app2/scatter?csv=${encodeURIComponent(currentCSV)}`;
+      document.getElementById("scatterPlot").style.display = "block";
+    }
+
+    function loadClusters() {
+      if (!currentCSV) return alert("Upload or fetch a CSV first.");
+      const n = parseInt(document.getElementById("centroidCount").value);
+      fetch('/app2/scatter_with_centroids', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ csv: currentCSV, n_clusters: n })
+      })
+      .then(res => res.blob())
+      .then(blob => {
+        const url = URL.createObjectURL(blob);
+        document.getElementById("clusterPlot").src = url;
+        document.getElementById("clusterPlot").style.display = "block";
+        document.getElementById("downloadCentroidsBtn").style.display = "inline-block";
+      });
+    }
+
+    function downloadCentroids() {
+      const n = parseInt(document.getElementById("centroidCount").value);
+      fetch('/app2/download_centroids', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ csv: currentCSV, n_clusters: n })
+      })
+      .then(res => res.blob())
+      .then(blob => {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `centroids_${n}.csv`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+      });
+    }
+  </script>
+
+  <style>
+    @keyframes loading {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+  </style>
+</body>
+</html>

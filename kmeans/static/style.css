@@ -1,0 +1,128 @@
+
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #fef6f0;
+    margin: 0;
+    padding: 40px;
+    display: flex;
+    justify-content: center;
+  }
+  * {
+    box-sizing: border-box;
+  }
+  .dashboard-container {
+    width: 95%;
+    max-width: 1300px;
+    background-color: white;
+    padding: 20px 30px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  }
+  
+  h1 {
+    font-size: 32px;
+    margin-bottom: 40px;
+    color: #3e2723;
+    text-align: center;
+  }
+  label {
+    padding-bottom: 1px;  /* Adds 1px padding below each label */
+    margin-bottom: 5px;   /* Optional: Adds a small margin for spacing */
+    display: block;       /* Ensures the labels are block elements, making padding and margin effective */
+  }
+  
+  .grid-2x2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto;
+    gap: 24px;
+  }
+  
+  .grid-box {
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    background-color: #fff8f2;
+  }
+  
+  .grid-box h2 {
+    text-align: center;
+    color: #4e342e;
+    margin-bottom: 16px;
+  }
+  
+  /* Diagonal coloring */
+  .fetch-box,
+  .cluster-box {
+    background-color: #fff3e0; /* orange shade */
+  }
+  
+  .upload-box,
+  .visuals-box {
+    background-color: #e8f5e9; /* green shade */
+  }
+  
+  input[type="date"],
+  input[type="file"],
+  input[type="number"],
+  select,
+  button {
+    width: 100%;
+    max-width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    margin-bottom: 12px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+  }
+  
+  button {
+    background-color: #ff7043;
+    color: white;
+    font-weight: bold;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  button:hover {
+    background-color: #f4511e;
+  }
+  
+  button.secondary {
+    background-color: #8d6e63;
+  }
+  
+  button.secondary:hover {
+    background-color: #6d4c41;
+  }
+  
+  button#downloadCentroidsBtn {
+    background-color: #4db6ac; /* teal-ish color for contrast */
+    color: white;
+    font-weight: bold;
+  }
+  
+  button#downloadCentroidsBtn:hover {
+    background-color: #009688;
+  }
+  
+  img.plot-img {
+    width: 100%;
+    margin-top: 12px;
+    border-radius: 10px;
+    border: 2px solid #ffccbc;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+  }
+  
+  #statusText,
+  #uploadResult {
+    margin-top: 10px;
+    font-weight: bold;
+    color: #5d4037;
+  }
+  
